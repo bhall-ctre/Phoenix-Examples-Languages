@@ -61,14 +61,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
+import frc.robot.sim.PhysicsSim;
+
 public class Robot extends TimedRobot {
 	/* Hardware */
-	TalonFX _talon = new TalonFX(1);
+	WPI_TalonFX _talon = new WPI_TalonFX(1);
 	Joystick _joy = new Joystick(0);
 
 	/* Used to build string throughout loop */
@@ -79,6 +81,13 @@ public class Robot extends TimedRobot {
 
 	/** save the last Point Of View / D-pad value */
 	int _pov = -1;
+
+	public void simulationInit() {
+		PhysicsSim.getInstance().addTalonFX(_talon, 0.5, 5100);
+	}
+	public void simulationPeriodic() {
+		PhysicsSim.getInstance().run();
+	}
 
 	public void robotInit() {
 		/* Factory default hardware to prevent unexpected behavior */

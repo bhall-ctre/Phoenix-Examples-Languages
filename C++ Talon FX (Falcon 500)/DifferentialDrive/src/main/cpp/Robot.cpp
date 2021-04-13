@@ -51,10 +51,10 @@ public:
 	Joystick * _joystick = new Joystick(0);
 
 	void SimulationInit() {
-		PhysicsSim::GetInstance().AddTalonFX(*_rghtFront, 0.5, 8000);
-		PhysicsSim::GetInstance().AddTalonFX(*_rghtFollower, 0.5, 8000);
-		PhysicsSim::GetInstance().AddTalonFX(*_leftFront, 0.5, 8000);
-		PhysicsSim::GetInstance().AddTalonFX(*_leftFollower, 0.5, 8000);
+		PhysicsSim::GetInstance().AddTalonFX(*_rghtFront, 0.5, 6800);
+		PhysicsSim::GetInstance().AddTalonFX(*_rghtFollower, 0.5, 6800);
+		PhysicsSim::GetInstance().AddTalonFX(*_leftFront, 0.5, 6800);
+		PhysicsSim::GetInstance().AddTalonFX(*_leftFollower, 0.5, 6800);
 	}
 	void SimulationPeriodic() {
 		PhysicsSim::GetInstance().Run();

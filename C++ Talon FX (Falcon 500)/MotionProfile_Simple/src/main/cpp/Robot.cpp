@@ -28,7 +28,7 @@
 
 void Robot::SimulationInit()
 {
-    PhysicsSim::GetInstance().AddTalonFX(*_master, 0.5, 8000);
+    PhysicsSim::GetInstance().AddTalonFX(*_master, 0.5, 6800);
 }
 void Robot::SimulationPeriodic()
 {

@@ -41,6 +41,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
+import frc.robot.sim.PhysicsSim;
+
 public class Robot extends TimedRobot {
     /*
      * --- [1] Update CAN Device IDs ------
@@ -56,6 +58,19 @@ public class Robot extends TimedRobot {
 
     Faults _faults_L = new Faults();
     Faults _faults_R = new Faults();
+
+    @Override
+    public void simulationInit() {
+        PhysicsSim.getInstance().addTalonFX(_rghtFront, 0.5, 6800);
+        PhysicsSim.getInstance().addTalonFX(_rghtFollower, 0.5, 6800);
+        PhysicsSim.getInstance().addTalonFX(_leftFront, 0.5, 6800);
+        PhysicsSim.getInstance().addTalonFX(_leftFollower, 0.5, 6800);
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        PhysicsSim.getInstance().run();
+    }
 
     @Override
     public void teleopPeriodic() {

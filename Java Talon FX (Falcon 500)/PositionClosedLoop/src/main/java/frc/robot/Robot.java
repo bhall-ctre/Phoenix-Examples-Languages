@@ -51,11 +51,13 @@ import edu.wpi.first.wpilibj.Joystick;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import frc.robot.sim.PhysicsSim;
 
 public class Robot extends TimedRobot {
     /** Hardware */
-	TalonFX _talon = new TalonFX(2);
+	WPI_TalonFX _talon = new WPI_TalonFX(2);
 	Joystick _joy = new Joystick(0);
 	
     /** Used to create string thoughout loop */
@@ -67,6 +69,13 @@ public class Robot extends TimedRobot {
 
 	/** Save the target position to servo to */
 	double targetPositionRotations;
+
+	public void simulationInit() {
+		PhysicsSim.getInstance().addTalonFX(_talon, 0.5, 6800);
+	}
+	public void simulationPeriodic() {
+		PhysicsSim.getInstance().run();
+	}
 
 	public void robotInit() {
 		/* Factory Default all hardware to prevent unexpected behaviour */
