@@ -7,9 +7,10 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.RobotController;
@@ -38,14 +39,14 @@ public class Robot extends TimedRobot {
   XboxController m_gamepad = new XboxController(0);
   XboxControllerSim m_gamepadSim = new XboxControllerSim(m_gamepad);
 
-  WPI_TalonSRX m_leftDrive = new WPI_TalonSRX(0);
-  WPI_VictorSPX m_leftFollower = new WPI_VictorSPX(1);
-  WPI_TalonSRX m_rightDrive = new WPI_TalonSRX(2);
-  WPI_VictorSPX m_rightFollower = new WPI_VictorSPX(3);
+  WPI_TalonFX m_leftDrive = new WPI_TalonFX(0);
+  WPI_TalonFX m_leftFollower = new WPI_TalonFX(1);
+  WPI_TalonFX m_rightDrive = new WPI_TalonFX(2);
+  WPI_TalonFX m_rightFollower = new WPI_TalonFX(3);
 
   // Object for simulated inputs into Talon.
-  TalonSRXSimCollection m_leftDriveSim = m_leftDrive.getSimCollection();
-  TalonSRXSimCollection m_rightDriveSim = m_rightDrive.getSimCollection();
+  TalonFXSimCollection m_leftDriveSim = m_leftDrive.getSimCollection();
+  TalonFXSimCollection m_rightDriveSim = m_rightDrive.getSimCollection();
 
   //Use a standard analog gyro since Pigeon doesn't have sim support yet
   AnalogGyro m_gyro = new AnalogGyro(1);
@@ -54,7 +55,7 @@ public class Robot extends TimedRobot {
   //These numbers are an example AndyMark Drivetrain with some additional weight.  This is a fairly light robot.
   //Note you can utilize results from robot characterization instead of theoretical numbers.
   //https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-characterization/introduction.html#introduction-to-robot-characterization
-  final int kCountsPerRev = 4096;  //Encoder counts per revolution of the motor shaft.
+  final int kCountsPerRev = 2048;  //Encoder counts per revolution of the motor shaft.
   final double kSensorGearRatio = 1; //Gear ratio is the ratio between the *encoder* and the wheels.  On the AndyMark drivetrain, encoders mount 1:1 with the gearbox shaft.
   final double kGearRatio = 10.71; //Switch kSensorGearRatio to this gear ratio if encoder is on the motor instead of on the gearbox.
   final double kWheelRadiusInches = 3;
@@ -99,27 +100,44 @@ public class Robot extends TimedRobot {
     m_leftFollower.follow(m_leftDrive);
     m_leftFollower.setInverted(InvertType.FollowMaster);
 
+    m_leftDrive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    m_rightDrive.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+
     SmartDashboard.putData("Field", m_field);
 
     // These "Real" settings should be changed to match your robot.
     if(isReal()){
-      // On our real robot, the left side is positive forward and
-      // sensor is in phase by default, so don't change it
-      m_leftDrive.setInverted(InvertType.None);
-      m_leftDrive.setSensorPhase(false);
+      // On our real robot, the left side is positive forward, so don't change it.
+      m_leftDrive.setInverted(TalonFXInvertType.CounterClockwise);
 
-      // On the real robot, the right side sensor is already in phase but
-      // the right side output needs to be inverted so that positive is forward.
-      m_rightDrive.setInverted(InvertType.InvertMotorOutput);
-      m_rightDrive.setSensorPhase(false);
+      // On the real robot, the right side output needs to be inverted so that positive is forward.
+      m_rightDrive.setInverted(TalonFXInvertType.Clockwise);
+
+      /*
+       * Talon FX does not need sensor phase set for its integrated sensor
+       * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
+       * and the user calls getSelectedSensor* to get the sensor's position/velocity.
+       * 
+       * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
+       */
+      //m_leftDrive.setSensorPhase(false);
+      //m_rightDrive.setSensorPhase(false);
     } else {
       // Drive simulator expects positive motor outputs for forward
       // and returns positive encoder values, so we don't need to
       // invert or set sensor phase.
-      m_leftDrive.setInverted(InvertType.None);
-      m_leftDrive.setSensorPhase(false);
-      m_rightDrive.setInverted(InvertType.None);
-      m_rightDrive.setSensorPhase(false);
+      m_leftDrive.setInverted(TalonFXInvertType.CounterClockwise);
+      m_rightDrive.setInverted(TalonFXInvertType.CounterClockwise);
+
+      /*
+       * Talon FX does not need sensor phase set for its integrated sensor
+       * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
+       * and the user calls getSelectedSensor* to get the sensor's position/velocity.
+       * 
+       * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
+       */
+      //m_leftDrive.setSensorPhase(false);
+      //m_rightDrive.setSensorPhase(false);
     }
   }
 
@@ -160,16 +178,16 @@ public class Robot extends TimedRobot {
     m_driveSim.update(0.02);
 
     // Update all of our sensors.
-    m_leftDriveSim.setQuadratureRawPosition(
+    m_leftDriveSim.setIntegratedSensorRawPosition(
                     distanceToNativeUnits(
                     m_driveSim.getLeftPositionMeters()));
-    m_leftDriveSim.setQuadratureVelocity(
+    m_leftDriveSim.setIntegratedSensorVelocity(
                     velocityToNativeUnits(
                     m_driveSim.getLeftVelocityMetersPerSecond()));
-    m_rightDriveSim.setQuadratureRawPosition(
+    m_rightDriveSim.setIntegratedSensorRawPosition(
                     distanceToNativeUnits(
                     m_driveSim.getRightPositionMeters()));
-    m_rightDriveSim.setQuadratureVelocity(
+    m_rightDriveSim.setIntegratedSensorVelocity(
                     velocityToNativeUnits(
                     m_driveSim.getRightVelocityMetersPerSecond()));
     m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());

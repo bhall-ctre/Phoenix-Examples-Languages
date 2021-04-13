@@ -65,6 +65,30 @@
                 "linuxx86-64",
                 "osxx86-64"
             ]
+        },
+        {
+            "groupId": "com.ctre.phoenix.sim",
+            "artifactId": "simPigeonIMU",
+            "version": "5.19.5",
+            "isJar": false,
+            "skipInvalidPlatforms": true,
+            "validPlatforms": [
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxx86-64"
+            ]
+        },
+        {
+            "groupId": "com.ctre.phoenix.sim",
+            "artifactId": "simTalonFX",
+            "version": "5.19.5",
+            "isJar": false,
+            "skipInvalidPlatforms": true,
+            "validPlatforms": [
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxx86-64"
+            ]
         }
     ],
     "cppDependencies": [
@@ -201,6 +225,34 @@
             "artifactId": "simVictorSPX",
             "version": "5.19.5",
             "libName": "CTRE_SimVictorSPX",
+            "headerClassifier": "headers",
+            "sharedLibrary": true,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxx86-64"
+            ]
+        },
+        {
+            "groupId": "com.ctre.phoenix.sim",
+            "artifactId": "simPigeonIMU",
+            "version": "5.19.5",
+            "libName": "CTRE_SimPigeonIMU",
+            "headerClassifier": "headers",
+            "sharedLibrary": true,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxx86-64"
+            ]
+        },
+        {
+            "groupId": "com.ctre.phoenix.sim",
+            "artifactId": "simTalonFX",
+            "version": "5.19.5",
+            "libName": "CTRE_SimTalonFX",
             "headerClassifier": "headers",
             "sharedLibrary": true,
             "skipInvalidPlatforms": true,
