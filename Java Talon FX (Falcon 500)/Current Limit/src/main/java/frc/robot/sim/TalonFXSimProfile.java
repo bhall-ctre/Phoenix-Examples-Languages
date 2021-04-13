@@ -75,7 +75,7 @@ class TalonFXSimProfile extends SimProfile {
         _falcon.getSimCollection().setIntegratedSensorVelocity((int)_vel);
 
         double supplyCurrent = Math.abs(outPerc) * 20 * random(0.95, 1.05);
-        double statorCurrent = outPerc == 0 ? 0 : supplyCurrent / Math.abs(outPerc + 0.3);
+        double statorCurrent = outPerc == 0 ? 0 : supplyCurrent / (Math.abs(outPerc) + 0.3);
         _falcon.getSimCollection().setSupplyCurrent(supplyCurrent);
         _falcon.getSimCollection().setStatorCurrent(statorCurrent);
 
