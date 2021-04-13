@@ -10,6 +10,9 @@
 class Robot : public frc::TimedRobot
 {
 public:
+	void SimulationInit() override;
+	void SimulationPeriodic() override;
+
 	void RobotInit() override;
 
 	void AutonomousInit() override;
@@ -23,7 +26,7 @@ public:
 
 private:
 	int _state;
-	TalonFX *_master;
+	WPI_TalonFX *_master;
 	frc::Joystick *_joy;
 	BufferedTrajectoryPointStream *_bufferedStream;
 	MotionProfileConfiguration *_configuration;

@@ -24,11 +24,21 @@
 #include "Robot.h"
 #include "MotionProfile.h"
 #include "Instrum.h"
+#include "PhysicsSim.h"
+
+void Robot::SimulationInit()
+{
+    PhysicsSim::GetInstance().AddTalonFX(*_master, 0.5, 8000);
+}
+void Robot::SimulationPeriodic()
+{
+    PhysicsSim::GetInstance().Run();
+}
 
 void Robot::RobotInit() 
 {
     /* Construct global variables being used */
-    _master = new TalonFX(1);
+    _master = new WPI_TalonFX(1);
     _joy = new frc::Joystick(0);
     _bufferedStream = new BufferedTrajectoryPointStream();
 

@@ -8,6 +8,9 @@
 class Robot : public frc::TimedRobot
 {
 public:
+	void SimulationInit() override;
+	void SimulationPeriodic() override;
+
 	void RobotInit() override;
 
 	void AutonomousInit() override;
@@ -20,7 +23,7 @@ public:
 	void TestPeriodic() override;
 
 private:
-	TalonFX *_talon;
+	WPI_TalonFX *_talon;
 	frc::Joystick *_joy;
 
 	int _smoothing;

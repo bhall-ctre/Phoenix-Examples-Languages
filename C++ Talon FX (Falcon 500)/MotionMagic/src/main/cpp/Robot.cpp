@@ -54,10 +54,18 @@
  * - Talon FX: 20.2.3.0
  */
 #include "Robot.h"
+#include "PhysicsSim.h"
 #include <sstream>
 
+void Robot::SimulationInit() {
+    PhysicsSim::GetInstance().AddTalonFX(*_talon, 0.5, 3400);
+}
+void Robot::SimulationPeriodic() {
+    PhysicsSim::GetInstance().Run();
+}
+
 void Robot::RobotInit() {
-    _talon = new TalonFX(1);
+    _talon = new WPI_TalonFX(1);
     _joy = new frc::Joystick(0);
 
     /* Factory default hardware to prevent unexpected behavior */
