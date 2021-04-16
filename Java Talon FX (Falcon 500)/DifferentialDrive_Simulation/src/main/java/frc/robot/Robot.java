@@ -11,6 +11,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.PigeonIMUSimCollection;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.RobotController;
@@ -48,9 +50,9 @@ public class Robot extends TimedRobot {
   TalonFXSimCollection m_leftDriveSim = m_leftDrive.getSimCollection();
   TalonFXSimCollection m_rightDriveSim = m_rightDrive.getSimCollection();
 
-  //Use a standard analog gyro since Pigeon doesn't have sim support yet
-  AnalogGyro m_gyro = new AnalogGyro(1);
-  AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
+  WPI_PigeonIMU m_pigeon = new WPI_PigeonIMU(1);
+  // Object for simulated inputs into Pigeon.
+  PigeonIMUSimCollection m_pigeonSim = m_pigeon.getSimCollection();
 
   //These numbers are an example AndyMark Drivetrain with some additional weight.  This is a fairly light robot.
   //Note you can utilize results from robot characterization instead of theoretical numbers.
@@ -63,7 +65,7 @@ public class Robot extends TimedRobot {
 
   //Simulation model of the drivetrain
   DifferentialDrivetrainSim m_driveSim = new DifferentialDrivetrainSim(
-    DCMotor.getCIM(2),        //2 CIMS on each side of the drivetrain.
+    DCMotor.getFalcon500(2),  //2 Falcon 500s on each side of the drivetrain.
     kGearRatio,               //Standard AndyMark Gearing reduction.
     2.1,                      //MOI of 2.1 kg m^2 (from CAD model).
     26.5,                     //Mass of the robot is 26.5 kg.
@@ -82,7 +84,7 @@ public class Robot extends TimedRobot {
   // Creating my odometry object. Here,
   // our starting pose is 5 meters along the long end of the field and in the
   // center of the field along the short end, facing forward.
-  DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+  DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_pigeon.getRotation2d());
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -105,40 +107,21 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putData("Field", m_field);
 
-    // These "Real" settings should be changed to match your robot.
-    if(isReal()){
-      // On our real robot, the left side is positive forward, so don't change it.
-      m_leftDrive.setInverted(TalonFXInvertType.CounterClockwise);
+    // On the robot, the left side is positive forward, so don't change it.
+    m_leftDrive.setInverted(TalonFXInvertType.CounterClockwise);
 
-      // On the real robot, the right side output needs to be inverted so that positive is forward.
-      m_rightDrive.setInverted(TalonFXInvertType.Clockwise);
+    // On the robot, the right side output needs to be inverted so that positive is forward.
+    m_rightDrive.setInverted(TalonFXInvertType.Clockwise);
 
-      /*
-       * Talon FX does not need sensor phase set for its integrated sensor
-       * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
-       * and the user calls getSelectedSensor* to get the sensor's position/velocity.
-       * 
-       * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
-       */
-      //m_leftDrive.setSensorPhase(false);
-      //m_rightDrive.setSensorPhase(false);
-    } else {
-      // Drive simulator expects positive motor outputs for forward
-      // and returns positive encoder values, so we don't need to
-      // invert or set sensor phase.
-      m_leftDrive.setInverted(TalonFXInvertType.CounterClockwise);
-      m_rightDrive.setInverted(TalonFXInvertType.CounterClockwise);
-
-      /*
-       * Talon FX does not need sensor phase set for its integrated sensor
-       * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
-       * and the user calls getSelectedSensor* to get the sensor's position/velocity.
-       * 
-       * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
-       */
-      //m_leftDrive.setSensorPhase(false);
-      //m_rightDrive.setSensorPhase(false);
-    }
+    /*
+     * Talon FX does not need sensor phase set for its integrated sensor
+     * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
+     * and the user calls getSelectedSensor* to get the sensor's position/velocity.
+     * 
+     * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
+     */
+    //m_leftDrive.setSensorPhase(false);
+    //m_rightDrive.setSensorPhase(false);
   }
 
   @Override
@@ -146,7 +129,7 @@ public class Robot extends TimedRobot {
     // This will get the simulated sensor readings that we set
     // in the previous article while in simulation, but will use
     // real values on the robot itself.
-    m_odometry.update(m_gyro.getRotation2d(),
+    m_odometry.update(m_pigeon.getRotation2d(),
                       nativeUnitsToDistanceMeters(m_leftDrive.getSelectedSensorPosition()),
                       nativeUnitsToDistanceMeters(m_rightDrive.getSelectedSensorPosition()));
     m_field.setRobotPose(m_odometry.getPoseMeters());
@@ -170,7 +153,7 @@ public class Robot extends TimedRobot {
     // Set the inputs to the system. Note that we need to use
     // the output voltage, NOT the percent output.
     m_driveSim.setInputs(m_leftDriveSim.getMotorOutputLeadVoltage(),
-                         m_rightDriveSim.getMotorOutputLeadVoltage()); //Right side is inverted, so forward is negative voltage
+                         -m_rightDriveSim.getMotorOutputLeadVoltage()); //Right side is inverted, so forward is negative voltage
 
     // Advance the model by 20 ms. Note that if you are running this
     // subsystem in a separate thread or have changed the nominal timestep
@@ -186,11 +169,11 @@ public class Robot extends TimedRobot {
                     m_driveSim.getLeftVelocityMetersPerSecond()));
     m_rightDriveSim.setIntegratedSensorRawPosition(
                     distanceToNativeUnits(
-                    m_driveSim.getRightPositionMeters()));
+                    -m_driveSim.getRightPositionMeters()));
     m_rightDriveSim.setIntegratedSensorVelocity(
                     velocityToNativeUnits(
-                    m_driveSim.getRightVelocityMetersPerSecond()));
-    m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
+                    -m_driveSim.getRightVelocityMetersPerSecond()));
+    m_pigeonSim.setRawHeading(m_driveSim.getHeading().getDegrees());
 
     //Update other inputs to Talons
     m_leftDriveSim.setBusVoltage(RobotController.getBatteryVoltage());

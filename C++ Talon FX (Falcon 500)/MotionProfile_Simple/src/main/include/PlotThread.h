@@ -9,12 +9,12 @@ class PlotThread
 private:
     std::thread *_thread;
 public:
-    PlotThread(TalonFX *talon)
+    PlotThread(TalonFX* talon)
     {
         _thread = new std::thread(Run, talon);
     }
 
-    static void Run(TalonFX *_talon) 
+    static void Run(TalonFX* _talon) 
     {
         /**
 		 * Speed up network tables, this is a test project so eat up all of the network

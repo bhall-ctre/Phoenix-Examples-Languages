@@ -23,8 +23,8 @@ public:
 	void TestPeriodic() override;
 
 private:
-	WPI_TalonFX *_talon;
-	frc::Joystick *_joy;
+	WPI_TalonFX _talon{1};
+	frc::Joystick _joy{0};
 
 	int _smoothing;
 };
