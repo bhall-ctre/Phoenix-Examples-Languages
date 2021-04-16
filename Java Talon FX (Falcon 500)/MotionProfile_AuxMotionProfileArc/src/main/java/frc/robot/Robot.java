@@ -60,11 +60,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.SensorTerm;
@@ -77,9 +78,9 @@ import com.ctre.phoenix.motorcontrol.FollowerType;
 
 public class Robot extends TimedRobot {
 	/** Hardware */
-	TalonFX _leftMaster = new TalonFX(2);
-	TalonFX _rightMaster = new TalonFX(1);
-	PigeonIMU _pidgey = new PigeonIMU(3);
+	WPI_TalonFX _leftMaster = new WPI_TalonFX(2);
+	WPI_TalonFX _rightMaster = new WPI_TalonFX(1);
+	WPI_PigeonIMU _pidgey = new WPI_PigeonIMU(3);
 
 	Joystick _gamepad = new Joystick(0);
 
@@ -110,9 +111,16 @@ public class Robot extends TimedRobot {
 		ButtonOnToOff;
 	}
 
+	DrivebaseSimFX _driveSim = new DrivebaseSimFX(_leftMaster, _rightMaster, _pidgey);
+
+	@Override
+	public void simulationPeriodic() {
+		_driveSim.run();
+	}
+
 	@Override
 	public void robotInit() {
-		/* Not used in this project */
+		SmartDashboard.putData("Field", _driveSim.getField());
 	}
 	
 	@Override
@@ -402,5 +410,5 @@ public class Robot extends TimedRobot {
 		/* Since the Distance is the sum of the two sides, divide by 2 so the total isn't double
 		   the real-world value */
 		masterConfig.primaryPID.selectedFeedbackCoefficient = 0.5;
-	 }
+	}
 }

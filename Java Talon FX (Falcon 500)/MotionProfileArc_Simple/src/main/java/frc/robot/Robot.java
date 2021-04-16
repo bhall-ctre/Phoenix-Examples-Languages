@@ -66,12 +66,13 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix.motion.*;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
 
@@ -79,11 +80,11 @@ public class Robot extends TimedRobot {
     int _state = 0;
 
     /** a master talon, add followers if need be. */
-    TalonFX _rightMaster = new TalonFX(1);
+    WPI_TalonFX _rightMaster = new WPI_TalonFX(1);
 
-    TalonFX _leftAuxFollower = new TalonFX(2);
+    WPI_TalonFX _leftAuxFollower = new WPI_TalonFX(2);
 
-    PigeonIMU _pidgy = new PigeonIMU(3);
+    WPI_PigeonIMU _pidgy = new WPI_PigeonIMU(3);
 
     /** gamepad for control */
     Joystick _joy = new Joystick(0);
@@ -100,6 +101,13 @@ public class Robot extends TimedRobot {
     
     /* quick and dirty plotter to smartdash */
 //    PlotThread _plotThread = new PlotThread(_rightMaster);
+
+	DrivebaseSimFX _driveSim = new DrivebaseSimFX(_leftAuxFollower, _rightMaster, _pidgy);
+
+	@Override
+	public void simulationPeriodic() {
+		_driveSim.run();
+	}
 
     public void robotInit() {
 
@@ -162,6 +170,8 @@ public class Robot extends TimedRobot {
         _rightMaster.setStatusFramePeriod(StatusFrame.Status_12_Feedback1, 20); /* plotthread is polling aux-pid-sensor-pos */
         _rightMaster.setStatusFramePeriod(StatusFrame.Status_10_Targets, 20);
         _rightMaster.setStatusFramePeriod(StatusFrame.Status_17_Targets1, 20);
+        
+		SmartDashboard.putData("Field", _driveSim.getField());
     }
 
     public void robotPeriodic() {
@@ -340,5 +350,5 @@ public class Robot extends TimedRobot {
 		/* Since the Distance is the sum of the two sides, divide by 2 so the total isn't double
 		   the real-world value */
 		masterConfig.primaryPID.selectedFeedbackCoefficient = 0.5;
-	 }
+	}
 }
