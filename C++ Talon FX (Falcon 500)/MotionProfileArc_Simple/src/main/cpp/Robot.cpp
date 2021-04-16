@@ -25,6 +25,10 @@
 #include "MotionProfile.h"
 #include "Instrum.h"
 
+void Robot::SimulationPeriodic() {
+    _driveSim.Run();
+}
+
 void Robot::RobotInit() 
 {
     /* Initialize buffer with motion profile */
@@ -49,17 +53,7 @@ void Robot::RobotInit()
 
     _rightMaster.SetStatusFramePeriod(StatusFrameEnhanced::Status_14_Turn_PIDF1, 20); //Telemetry using Phoenix Tuner
 
-	frc::SmartDashboard::PutData(wpi::StringRef("Field"), &_field);
-}
-
-void Robot::RobotPeriodic() {
-    // This will get the simulated sensor readings that we set
-    // in the previous article while in simulation, but will use
-    // real values on the robot itself.
-    _odometry.Update(_pidgey.GetRotation2d(),
-                    units::meter_t{NativeUnitsToDistanceMeters(_leftMaster.GetSelectedSensorPosition())},
-                    units::meter_t{NativeUnitsToDistanceMeters(_rightMaster.GetSelectedSensorPosition())});
-    _field.SetRobotPose(_odometry.GetPose());
+	frc::SmartDashboard::PutData(wpi::StringRef("Field"), &_driveSim.GetField());
 }
 
 void Robot::AutonomousInit() {}
@@ -168,59 +162,6 @@ void Robot::InitBuffer(const double profile[][3], int totalCnt, double rotations
         point.useAuxPID = true; /* Using auxiliary PID */
         _bufferedStream.Write(point);
     }
-}
-
-void Robot::SimulationPeriodic() {
-    // Set the inputs to the system. Note that we need to use
-    // the output voltage, NOT the percent output.
-    _driveSim.SetInputs(units::volt_t{_leftMasterSim.GetMotorOutputLeadVoltage()},
-                        units::volt_t{-_rightMasterSim.GetMotorOutputLeadVoltage()}); //Right side is inverted, so forward is negative voltage
-
-    // Advance the model by 20 ms. Note that if you are running this
-    // subsystem in a separate thread or have changed the nominal timestep
-    // of TimedRobot, this value needs to match it.
-    _driveSim.Update(0.02_s);
-
-    // Update all of our sensors.
-    _leftMasterSim.SetIntegratedSensorRawPosition(
-                    DistanceToNativeUnits(
-                    _driveSim.GetLeftPosition().to<double>()));
-    _leftMasterSim.SetIntegratedSensorVelocity(
-                    VelocityToNativeUnits(
-                    _driveSim.GetLeftVelocity().to<double>()));
-    _rightMasterSim.SetIntegratedSensorRawPosition(
-                    DistanceToNativeUnits(
-                    -_driveSim.GetRightPosition().to<double>()));
-    _rightMasterSim.SetIntegratedSensorVelocity(
-                    VelocityToNativeUnits(
-                    -_driveSim.GetRightVelocity().to<double>()));
-    _pidgeySim.SetRawHeading(_driveSim.GetHeading().Degrees().to<double>());
-
-    //Update other inputs to Talons
-    _leftMasterSim.SetBusVoltage(frc::RobotController::GetInputVoltage());
-    _rightMasterSim.SetBusVoltage(frc::RobotController::GetInputVoltage());
-}
-
-int Robot::DistanceToNativeUnits(double positionMeters){
-    double wheelRotations = positionMeters/(2 * wpi::math::pi * kWheelRadiusInches.convert<units::meter>().to<double>());
-    double motorRotations = wheelRotations * kSensorGearRatio;
-    int sensorCounts = (int)(motorRotations * kCountsPerRev);
-    return sensorCounts;
-}
-
-int Robot::VelocityToNativeUnits(double velocityMetersPerSecond){
-    double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * wpi::math::pi * kWheelRadiusInches.convert<units::meter>().to<double>());
-    double motorRotationsPerSecond = wheelRotationsPerSecond * kSensorGearRatio;
-    double motorRotationsPer100ms = motorRotationsPerSecond / k100msPerSecond;
-    int sensorCountsPer100ms = (int)(motorRotationsPer100ms * kCountsPerRev);
-    return sensorCountsPer100ms;
-}
-
-double Robot::NativeUnitsToDistanceMeters(double sensorCounts){
-    double motorRotations = (double)sensorCounts / kCountsPerRev;
-    double wheelRotations = motorRotations / kSensorGearRatio;
-    double positionMeters = wheelRotations * (2 * wpi::math::pi * kWheelRadiusInches.convert<units::meter>().to<double>());
-    return positionMeters;
 }
 
 #ifndef RUNNING_FRC_TESTS
