@@ -62,6 +62,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -74,14 +75,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 public class Robot extends TimedRobot {
 	/** Hardware */
-	TalonSRX _leftMaster = new TalonSRX(2);
-	TalonSRX _rightMaster = new TalonSRX(1);
-	PigeonIMU _pidgey = new PigeonIMU(3);
+	WPI_TalonSRX _leftMaster = new WPI_TalonSRX(2);
+	WPI_TalonSRX _rightMaster = new WPI_TalonSRX(1);
+	WPI_PigeonIMU _pidgey = new WPI_PigeonIMU(3);
 	Joystick _gamepad = new Joystick(0);
 	
 	/** Latched values to detect on-press events for buttons */
@@ -96,9 +97,16 @@ public class Robot extends TimedRobot {
 	/** How much smoothing [0,8] to use during MotionMagic */
 	int _smoothing;
 
+	DrivebaseSimSRX _driveSim = new DrivebaseSimSRX(_leftMaster, _rightMaster, _pidgey);
+
+	@Override
+	public void simulationPeriodic() {
+		_driveSim.run();
+	}
+
 	@Override
 	public void robotInit() {
-		/* Not used in this project */
+		SmartDashboard.putData("Field", _driveSim.getField());
 	}
 
 	@Override
