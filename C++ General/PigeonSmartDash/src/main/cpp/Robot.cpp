@@ -35,34 +35,28 @@ public:
 	/* forward proto */
 	class PlotThread;
 
-	TalonSRX * _talon;
-	PigeonIMU * _pidgey;
+	TalonSRX _talon{2};
+	PigeonIMU _pidgey{&_talon};
 
-	PlotThread *_plotThread;
+	PlotThread *_plotThread = nullptr;
 
-	Robot() {
-		_talon = new TalonSRX(2);
-		_pidgey = new PigeonIMU(_talon);
-		_plotThread = NULL;
-	}
 	void RobotInit(){
 		/* Factory Default all hardware to prevent unexpected behaviour */
-		_talon->ConfigFactoryDefault();
-		_pidgey->ConfigFactoryDefault();
+		_talon.ConfigFactoryDefault();
+		_pidgey.ConfigFactoryDefault();
 	}
 	void TeleopInit() {
-		_plotThread = new PlotThread(this);
+		_plotThread = new PlotThread(*this);
 	}
 	void TeleopPeriodic() { }
 
 	/** quick and dirty threaded plotter */
 	class PlotThread {
 	public:
-		Robot * _robot;
-		std::thread * _thrd;
-		PlotThread(Robot * robot) {
-			this->_robot = robot;
-			this->_thrd = new std::thread(&PlotThread::execute, this);
+		Robot& _robot;
+		std::thread* _thrd;
+		PlotThread(Robot& robot) : _robot(robot) {
+			_thrd = new std::thread(&PlotThread::execute, this);
 		}
 
 		void execute() {
@@ -73,7 +67,7 @@ public:
 				/* yield for a ms or so - this is not meant to be accurate */
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				/* grab the last signal update from our 1ms frame update */
-				double heading = _robot->_pidgey->GetFusedHeading();
+				double heading = _robot._pidgey.GetFusedHeading();
 				SmartDashboard::PutNumber("hdng", heading);
 			}
 		}

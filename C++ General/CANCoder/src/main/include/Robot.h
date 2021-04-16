@@ -20,6 +20,6 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
 private:
-  CANCoder * _CANCoder;
-  frc::Joystick *_joy;
+  WPI_CANCoder _CANCoder{0};
+  frc::Joystick _joy{0};
 };

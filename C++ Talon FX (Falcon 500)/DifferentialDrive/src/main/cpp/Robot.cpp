@@ -60,8 +60,8 @@ public:
 		std::stringstream work;
 
 		/* get gamepad stick values */
-		double forw = -1 * _joystick.GetRawAxis(1); /* positive is forward */
-		double turn = +1 * _joystick.GetRawAxis(2); /* positive is right */
+		double forw = -_joystick.GetRawAxis(1); /* positive is forward */
+		double turn = _joystick.GetRawAxis(2); /* positive is right */
 
 		/* deadband gamepad 10%*/
 		if (fabs(forw) < 0.10)

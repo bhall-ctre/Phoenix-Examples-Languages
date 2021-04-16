@@ -40,13 +40,13 @@ using namespace frc;
 
 class Robot: public TimedRobot {
 	/* robot peripherals */
-	TalonSRX * _leftFront;
-	TalonSRX * _rightFront;
-	TalonSRX * _leftRear;
-	TalonSRX * _rightRear;
-	TalonSRX * _spareTalon; /* spare talon, remove if not necessary, Pigeon can be placed on CANbus or plugged into a Talon. */
-	PigeonIMU * _pidgey;
-	Joystick *_driveStick; /* Joystick object on USB port 1 */
+	TalonSRX _leftFront{0};
+	TalonSRX _rightFront{1};
+	TalonSRX _leftRear{2};
+	TalonSRX _rightRear{3};
+	TalonSRX _spareTalon{4}; /* spare talon, remove if not necessary, Pigeon can be placed on CANbus or plugged into a Talon. */
+	PigeonIMU _pidgey{&_leftFront};
+	Joystick _driveStick{0}; /* Joystick object on USB port 1 */
 	/** state for tracking whats controlling the drivetrain */
 	enum {
 		GoStraightOff, GoStraightWithPidgeon, GoStraightSameThrottle
@@ -64,36 +64,19 @@ class Robot: public TimedRobot {
 	/** count loops to print every second or so */
 	int _printLoops = 0;
 public:
-	/**
-	 * Constructor for this class.
-	 */
-	Robot() {
-		_leftFront = new TalonSRX(0);
-		_rightFront = new TalonSRX(1);
-		_leftRear = new TalonSRX(2);
-		_rightRear = new TalonSRX(3);
-		_spareTalon = new TalonSRX(4);
-
-		/* choose which cabling method for Pigeon */
-		//_pidgey = new PigeonImu(0); /* Pigeon is on CANBus (powered from ~12V, and has a device ID of zero */
-		_pidgey = new PigeonIMU(_leftFront); /* Pigeon is ribbon cabled to the specified CANTalon. */
-
-		/* Define joystick being used at USB port #0 on the Drivers Station */
-		_driveStick = new Joystick(0);
-	}
-	void RobotInit(){
+	void RobotInit() {
 		/* Factory Default all hardware to prevent unexpected behaviour */
-		_leftFront->ConfigFactoryDefault();
-		_rightFront->ConfigFactoryDefault();
-		_leftRear->ConfigFactoryDefault();
-		_rightRear->ConfigFactoryDefault();
-		_spareTalon->ConfigFactoryDefault();
-		_pidgey->ConfigFactoryDefault();
+		_leftFront.ConfigFactoryDefault();
+		_rightFront.ConfigFactoryDefault();
+		_leftRear.ConfigFactoryDefault();
+		_rightRear.ConfigFactoryDefault();
+		_spareTalon.ConfigFactoryDefault();
+		_pidgey.ConfigFactoryDefault();
 	}
 	void TeleopInit() {
 	    /* nonzero to block the config until success, zero to skip checking */
     	const int kTimeoutMs = 30;
-		_pidgey->SetFusedHeading(0.0, kTimeoutMs); /* reset heading, angle measurement wraps at plus/minus 23,040 degrees (64 rotations) */
+		_pidgey.SetFusedHeading(0.0, kTimeoutMs); /* reset heading, angle measurement wraps at plus/minus 23,040 degrees (64 rotations) */
 		_goStraight = GoStraightOff;
 	}
 
@@ -105,18 +88,18 @@ public:
 		PigeonIMU::GeneralStatus genStatus;
 		double xyz_dps[3];
 		/* grab some input data from Pigeon and gamepad*/
-		_pidgey->GetGeneralStatus(genStatus);
-		_pidgey->GetRawGyro(xyz_dps);
+		_pidgey.GetGeneralStatus(genStatus);
+		_pidgey.GetRawGyro(xyz_dps);
 
-		PigeonIMU::FusionStatus *stat = new PigeonIMU::FusionStatus();
-		_pidgey->GetFusedHeading(*stat);
-		double currentAngle = stat->heading;
-		bool angleIsGood = (_pidgey->GetState() == PigeonIMU::Ready) ? true : false;
+		PigeonIMU::FusionStatus stat;
+		_pidgey.GetFusedHeading(stat);
+		double currentAngle = stat.heading;
+		bool angleIsGood = (_pidgey.GetState() == PigeonIMU::Ready) ? true : false;
 		double currentAngularRate = xyz_dps[2];
 		/* get input from gamepad */
-		bool userWantsGoStraight = _driveStick->GetRawButton(5); /* top left shoulder button */
-		double forwardThrottle = _driveStick->GetY() * -1.0; /* sign so that positive is forward */
-		double turnThrottle = _driveStick->GetZ() * -1.0; /* sign so that positive means turn left */
+		bool userWantsGoStraight = _driveStick.GetRawButton(5); /* top left shoulder button */
+		double forwardThrottle = -_driveStick.GetY(); /* sign so that positive is forward */
+		double turnThrottle = -_driveStick.GetZ(); /* sign so that positive means turn left */
 		/* deadbands so centering joysticks always results in zero output */
 		forwardThrottle = Db(forwardThrottle);
 		turnThrottle = Db(turnThrottle);
@@ -182,10 +165,10 @@ public:
 		right = Cap(right, 1.0);
 
 		/* my right side motors need to drive negative to move robot forward */
-		_leftFront->Set(ControlMode::PercentOutput, left);
-		_leftRear->Set(ControlMode::PercentOutput, left);
-		_rightFront->Set(ControlMode::PercentOutput, -1. * right);
-		_rightRear->Set(ControlMode::PercentOutput, -1. * right);
+		_leftFront.Set(ControlMode::PercentOutput, left);
+		_leftRear.Set(ControlMode::PercentOutput, left);
+		_rightFront.Set(ControlMode::PercentOutput, -1. * right);
+		_rightRear.Set(ControlMode::PercentOutput, -1. * right);
 
 		/* some printing for easy debugging */
 		if (++_printLoops > 50) {
@@ -203,7 +186,7 @@ public:
 
 		/* press btn 6, top right shoulder, to apply gains from webdash.  This can
 		 * be replaced with your favorite means of changing gains. */
-		if (_driveStick->GetRawButton(6)) {
+		if (_driveStick.GetRawButton(6)) {
 			UpdatGains();
 		}
 	}

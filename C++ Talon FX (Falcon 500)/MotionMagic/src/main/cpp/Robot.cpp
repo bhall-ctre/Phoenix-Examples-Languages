@@ -114,8 +114,8 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
     /* Get gamepad axis - forward stick is positive */
-    double leftYstick = -1.0 * _joy.GetY();
-    double RightYstick = -1.0 * _joy.GetRawAxis(5);
+    double leftYstick = -_joy.GetY();
+    double RightYstick = -_joy.GetRawAxis(5);
     if (fabs(leftYstick) < 0.10) { leftYstick = 0;} /* deadband 10% */
     if (fabs(RightYstick) < 0.10) { RightYstick = 0;} /* deadband 10% */
 
