@@ -115,6 +115,6 @@ public class Robot extends TimedRobot {
 		}
 		
 		/* Drive talon with joystick */
-		_tal.set(ControlMode.PercentOutput, -1 * _joy.getY());
+		_tal.set(ControlMode.PercentOutput, -_joy.getY());
 	}
 }

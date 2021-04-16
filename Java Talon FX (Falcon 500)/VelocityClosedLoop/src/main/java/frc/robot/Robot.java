@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
 	 */
 	public void teleopPeriodic() {
 		/* Get gamepad axis */
-		double leftYstick = -1 * _joy.getY();
+		double leftYstick = -_joy.getY();
 
 		/* Get Talon/Victor's current output percentage */
 		double motorOutput = _talon.getMotorOutputPercent();

@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationInit() {
     PhysicsSim.getInstance().addTalonSRX(_left, 0.75, 4000);
-    PhysicsSim.getInstance().addTalonSRX(_rght, 0.75, 4000, true);
+    PhysicsSim.getInstance().addTalonSRX(_rght, 0.75, 4000);
   }
   @Override
   public void simulationPeriodic() {
@@ -117,8 +117,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     /* Gamepad processing */
-    double forward = -1.0 * _joy.getY(); // Sign this so forward is positive
-    double turn = +1.0 * _joy.getZ(); // Sign this so right is positive
+    double forward = -_joy.getY(); // Sign this so forward is positive
+    double turn = _joy.getZ(); // Sign this so right is positive
 
     /**
      * Print the joystick values to sign them, comment out this line after checking

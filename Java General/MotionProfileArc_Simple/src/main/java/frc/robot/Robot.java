@@ -165,8 +165,8 @@ public class Robot extends TimedRobot {
         /* get joystick button and stick */
         boolean bPrintValues = _joy.getRawButton(2);
         boolean bFireMp = _joy.getRawButton(1);
-        double axis = -1.0 * _joy.getRawAxis(1); /* forward stick should be positive */
-        double turn = -1.0 * _joy.getRawAxis(2); /* turn stick should be positive for turning left */
+        double axis = -_joy.getRawAxis(1); /* forward stick should be positive */
+        double turn = -_joy.getRawAxis(2); /* turn stick should be positive for turning left */
 
         /* if button is up, just drive the motor in PercentOutput */
         if (bFireMp == false) {
@@ -232,7 +232,7 @@ public class Robot extends TimedRobot {
         /* Insert every point into buffer, no limit on size */
         for (int i = 0; i < totalCnt; ++i) {
 
-            double direction = forward ? +1 : -1;
+            double direction = forward ? 1 : -1;
             /* use the generated profile to figure out the forward arc path (translation)*/
             double positionRot = profile[i][0];
             double velocityRPM = profile[i][1];

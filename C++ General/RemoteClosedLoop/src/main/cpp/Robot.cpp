@@ -197,7 +197,7 @@ public:
 
 	void SimulationInit() {
 		PhysicsSim::GetInstance().AddTalonSRX(_talonLeft, 0.75, 6800, true);
-		PhysicsSim::GetInstance().AddTalonSRX(_talonRght, 0.75, 6800, false);
+		PhysicsSim::GetInstance().AddTalonSRX(_talonRght, 0.75, 6800, true);
 	}
 	void SimulationPeriodic() {
 		PhysicsSim::GetInstance().Run();

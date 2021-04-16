@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void simulationInit() {
 		PhysicsSim.getInstance().addTalonSRX(_leftMaster, 1.5, 6800, true);
-		PhysicsSim.getInstance().addTalonSRX(_rightMaster, 1.5, 6800, false);
+		PhysicsSim.getInstance().addTalonSRX(_rightMaster, 1.5, 6800, true);
 	}
 	@Override
 	public void simulationPeriodic() {
@@ -194,7 +194,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		/* Gamepad processing */
-		double forward = -1 * _gamepad.getY();
+		double forward = -_gamepad.getY();
 		double turn = _gamepad.getTwist();
 		forward = Deadband(forward);
         turn = Deadband(turn);
@@ -254,7 +254,7 @@ public class Robot extends TimedRobot {
 	/** Deadband 5 percent, used on the gamepad (To be added to Framework?) */
 	double Deadband(double value) {
 		/* Upper deadband */
-		if (value >= +0.05) 
+		if (value >= 0.05) 
 			return value;
 		
 		/* Lower deadband */

@@ -286,7 +286,7 @@ public class MotionProfileExample {
 		
 		/* This is fast since it's just into our TOP buffer */
 		for (int i = 0; i < totalCnt; ++i) {
-			double direction = _bForward ? +1 : -1;
+			double direction = _bForward ? 1 : -1;
 			double positionRot = profile[i][0];
 			double velocityRPM = profile[i][1];
 			double heading = _endHeading * positionRot / finalPositionRot; /* scale heading progress to position progress */

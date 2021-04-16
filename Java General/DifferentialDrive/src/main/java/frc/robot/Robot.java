@@ -76,8 +76,8 @@ public class Robot extends TimedRobot {
         String work = "";
 
         /* get gamepad stick values */
-        double forw = -1 * _joystick.getRawAxis(1); /* positive is forward */
-        double turn = +1 * _joystick.getRawAxis(2); /* positive is right */
+        double forw = -_joystick.getRawAxis(1); /* positive is forward */
+        double turn = _joystick.getRawAxis(2); /* positive is right */
         boolean btn1 = _joystick.getRawButton(1); /* is button is down, print joystick values */
 
         /* deadband gamepad 10% */

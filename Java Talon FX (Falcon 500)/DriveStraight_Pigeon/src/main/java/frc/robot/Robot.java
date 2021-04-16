@@ -215,8 +215,8 @@ public class Robot extends TimedRobot {
 		/* our right side motors need to drive negative to move robot forward */
 		_leftFront.set(TalonFXControlMode.PercentOutput, left);
 		_leftRear.set(TalonFXControlMode.PercentOutput, left);
-		_rightFront.set(TalonFXControlMode.PercentOutput, -1. * right);
-		_rightRear.set(TalonFXControlMode.PercentOutput, -1. * right);
+		_rightFront.set(TalonFXControlMode.PercentOutput, -right);
+		_rightRear.set(TalonFXControlMode.PercentOutput, -right);
 
 		/* Prints for debugging */
 		if (++_printLoops > 50){
@@ -240,7 +240,7 @@ public class Robot extends TimedRobot {
 	double Deadband(double axisVal) {
 		if (axisVal < -0.10)
 			return axisVal;
-		if (axisVal > +0.10)
+		if (axisVal > 0.10)
 			return axisVal;
 		return 0;
     }

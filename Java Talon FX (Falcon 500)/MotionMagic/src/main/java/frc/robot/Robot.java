@@ -147,8 +147,8 @@ public class Robot extends TimedRobot {
 	 */
 	public void teleopPeriodic() {
 		/* Get gamepad axis - forward stick is positive */
-		double leftYstick = -1.0 * _joy.getY(); /* left-side Y for Xbox360Gamepad */
-		double rghtYstick = -1.0 * _joy.getRawAxis(5); /* right-side Y for Xbox360Gamepad */
+		double leftYstick = -_joy.getY(); /* left-side Y for Xbox360Gamepad */
+		double rghtYstick = -_joy.getRawAxis(5); /* right-side Y for Xbox360Gamepad */
 		if (Math.abs(leftYstick) < 0.10) { leftYstick = 0; } /* deadband 10% */
 		if (Math.abs(rghtYstick) < 0.10) { rghtYstick = 0; } /* deadband 10% */
 

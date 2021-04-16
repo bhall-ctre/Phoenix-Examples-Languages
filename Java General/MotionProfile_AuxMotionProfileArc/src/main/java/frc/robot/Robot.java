@@ -260,7 +260,7 @@ public class Robot extends TimedRobot {
 		ButtonEvent bExecuteAction = ButtonEvent.ButtonOff;
 
 		/* Gamepad processing */
-		double forward = -1 * _gamepad.getY();
+		double forward = -_gamepad.getY();
 		double turn = _gamepad.getTwist();
 		forward = Deadband(forward);
 		turn = Deadband(turn);	
@@ -297,7 +297,7 @@ public class Robot extends TimedRobot {
 			/* Calculate targets from gamepad inputs */
 			boolean bMoveForward = (forward >= 0) ? true : false;
 			/* positive right stick => negative heading target (turn to right), limit to [-90, 90 deg of current heading] */
-			double finalHeading_units = Constants.kPigeonUnitsPerRotation * turn * -1.0 * 0.25;
+			double finalHeading_units = Constants.kPigeonUnitsPerRotation * turn * -0.25;
 
 			if (_firstCall) {
 				System.out.println("This is Motion Profile Auxiliary, also known as MotionProfileArc using the Pigeon for turn");
@@ -339,7 +339,7 @@ public class Robot extends TimedRobot {
 	/** Deadband 5 percent, used on the gamepad */
 	double Deadband(double value) {
 		/* Upper deadband */
-		if (value >= +0.05) 
+		if (value >= 0.05) 
 			return value;
 		
 		/* Lower deadband */

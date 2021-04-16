@@ -271,8 +271,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         /* get joystick values */
-        double frwd = +1 * _joy.getRawAxis(1); /* signed so positive means drive forward (green LEDs) */
-        double turn = -1 * _joy.getRawAxis(2); /* signed so positive means turn to the left */
+        double frwd = _joy.getRawAxis(1); /* signed so positive means drive forward (green LEDs) */
+        double turn = -_joy.getRawAxis(2); /* signed so positive means turn to the left */
 
         if (_rghtSide == null) {
             /* there are no talons in this setup */

@@ -51,7 +51,7 @@ class TalonSRXSimProfile extends SimProfile {
 
         /// DEVICE SPEED SIMULATION
 
-        double outPerc = _talon.getMotorOutputPercent();
+        double outPerc = _talon.getSimCollection().getMotorOutputLeadVoltage() / 12;
         if (_sensorPhase) {
             outPerc *= -1;
         }

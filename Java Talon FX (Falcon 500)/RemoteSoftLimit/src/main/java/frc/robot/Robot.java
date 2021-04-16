@@ -280,7 +280,7 @@ public class Robot extends TimedRobot {
     void commonLoop() {
         /* Gamepad processing */
         getButtons(_currentBtns);               // Update buttons
-        double joyForward = -1 * _joy.getY();   // positive stick => forward
+        double joyForward = -_joy.getY();   // positive stick => forward
         joyForward = deadband(joyForward);      // Deadband joystick
         joyForward *= 0.50f;                    // Reduce speed so PWM sensor doesn't wrap around
 
@@ -350,7 +350,7 @@ public class Robot extends TimedRobot {
     }
 
     double deadband(double value) {
-        if (value >= +0.05) {
+        if (value >= 0.05) {
             return value;
         }
         if (value <= -0.05) {

@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
 		 * Get the left joystick axis on Logitech Gampead, 
 		 * Joystick forward should be postive 
 		 */
-		double leftYjoystick = -1 * _joy.getY();
+		double leftYjoystick = -_joy.getY();
 
 		/**
 		 * Call this periodically, and catch the output. 

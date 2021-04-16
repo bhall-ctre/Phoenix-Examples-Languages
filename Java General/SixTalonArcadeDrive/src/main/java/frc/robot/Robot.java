@@ -120,8 +120,8 @@ public class Robot extends TimedRobot {
 	 */
 	public void teleopPeriodic() {
         /* Gamepad processing */
-		double forward = -1.0 * _joy.getY();	// Sign this so forward is positive
-		double turn = +1.0 * _joy.getZ();       // Sign this so right is positive
+		double forward = -_joy.getY();	// Sign this so forward is positive
+		double turn = _joy.getZ();       // Sign this so right is positive
         
         /* Deadband - within 10% joystick, make it zero */
 		if (Math.abs(forward) < 0.10) {

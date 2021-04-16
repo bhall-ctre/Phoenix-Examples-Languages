@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		/* Set talon to joystick value */
-		_tachTalon.set(ControlMode.PercentOutput, -1 * _joy.getY());
+		_tachTalon.set(ControlMode.PercentOutput, -_joy.getY());
 		
 		/**
 		 * Get the velocities of two talons,

@@ -174,7 +174,7 @@ public class Robot extends TimedRobot {
         /* Insert every point into buffer, no limit on size */
         for (int i = 0; i < totalCnt; ++i) {
 
-            double direction = forward ? +1 : -1;
+            double direction = forward ? 1 : -1;
             double positionRot = profile[i][0];
             double velocityRPM = profile[i][1];
             int durationMilliseconds = (int) profile[i][2];

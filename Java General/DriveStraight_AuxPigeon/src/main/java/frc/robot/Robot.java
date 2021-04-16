@@ -248,7 +248,7 @@ public class Robot extends TimedRobot {
 	/** Deadband 5 percent, used on the gamepad */
 	double Deadband(double value) {
 		/* Upper deadband */
-		if (value >= +0.05) 
+		if (value >= 0.05) 
 			return value;
 		
 		/* Lower deadband */

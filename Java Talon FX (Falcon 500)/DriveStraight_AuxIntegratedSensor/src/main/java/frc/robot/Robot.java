@@ -199,7 +199,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		/* Gamepad processing */
-		double forward = -1 * _gamepad.getY();
+		double forward = -_gamepad.getY();
 		double turn = _gamepad.getTwist();
 		forward = Deadband(forward);
 		turn = Deadband(turn);
@@ -247,7 +247,7 @@ public class Robot extends TimedRobot {
 	/** Deadband 5 percent, used on the gamepad */
 	double Deadband(double value) {
 		/* Upper deadband */
-		if (value >= +0.05) 
+		if (value >= 0.05) 
 			return value;
 		
 		/* Lower deadband */
@@ -314,9 +314,9 @@ public class Robot extends TimedRobot {
 				Auxiliary is the other side's distance.
 
 					Phase | Term 0   |   Term 1  | Result
-				Sum:  -1 *((-)Master + (+)Aux   )| OK - magnitude will cancel each other out
-				Diff: -1 *((-)Master - (+)Aux   )| NOT OK - magnitude increases with forward distance.
-				Diff: -1 *((+)Aux    - (-)Master)| NOT OK - magnitude decreases with forward distance
+				Sum:  -((-)Master + (+)Aux   )| OK - magnitude will cancel each other out
+				Diff: -((-)Master - (+)Aux   )| NOT OK - magnitude increases with forward distance.
+				Diff: -((+)Aux    - (-)Master)| NOT OK - magnitude decreases with forward distance
 			*/
 
 			masterConfig.sum0Term = TalonFXFeedbackDevice.IntegratedSensor.toFeedbackDevice(); //Local Integrated Sensor

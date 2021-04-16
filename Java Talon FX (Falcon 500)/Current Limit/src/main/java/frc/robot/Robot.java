@@ -118,7 +118,7 @@ public class Robot extends TimedRobot {
 		boolean btn1 = _joy.getRawButton(1);
 		boolean btn2 = _joy.getRawButton(2);
 		boolean btn5 = _joy.getRawButton(5);
-		double stick = -1.0 * _joy.getY();
+		double stick = -_joy.getY();
 
 		if (btn1) {
 			/* on button 1 press, manual control with stick */
