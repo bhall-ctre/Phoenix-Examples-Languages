@@ -291,7 +291,7 @@ public class Robot extends TimedRobot {
 			if (_firstCall)
 				System.out.println("This is a basic arcade drive.\n");
 			
-			_tempMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, +turn);
+			_tempMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, turn);
 			_rightMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, -turn);
 		}else{
 			/* Calculate targets from gamepad inputs */

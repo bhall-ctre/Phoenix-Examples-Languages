@@ -236,7 +236,7 @@ public class Robot extends TimedRobot {
 			if (_firstCall)
 				System.out.println("This is a Arcade Drive.\n");
 			
-			_leftMaster.set(TalonFXControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, +turn);
+			_leftMaster.set(TalonFXControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, turn);
 			_rightMaster.set(TalonFXControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, -turn);
 		}else{
 			if (_firstCall) {

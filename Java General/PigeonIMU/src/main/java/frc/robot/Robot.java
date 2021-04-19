@@ -279,7 +279,7 @@ public class Robot extends TimedRobot {
         } else {
             /* drive the drivetrain assuming a simple diff drive. Alernatively a drivetrain class can be used. */
             _leftSide.set(ControlMode.PercentOutput, frwd, DemandType.ArbitraryFeedForward, -turn);
-            _rghtSide.set(ControlMode.PercentOutput, frwd, DemandType.ArbitraryFeedForward, +turn);
+            _rghtSide.set(ControlMode.PercentOutput, frwd, DemandType.ArbitraryFeedForward, turn);
         }
     }
 }

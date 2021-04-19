@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
 		turn = Deadband(turn);
 
 		/* Arcade Drive using PercentOutput along with Arbitrary Feed Forward supplied by turn */
-		_leftMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, +turn);
+		_leftMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, turn);
 		_rightMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, -turn);
 	}
 

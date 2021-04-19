@@ -178,7 +178,7 @@ public class Robot extends TimedRobot {
 	        case 0:
 	            /* some clever use of the arbitratry feedforward to add the turn, there are many
 	             * alternative ways to do this */
-	            _rightMaster.set(ControlMode.PercentOutput, axis, DemandType.ArbitraryFeedForward, +turn);
+	            _rightMaster.set(ControlMode.PercentOutput, axis, DemandType.ArbitraryFeedForward, turn);
 	            _leftAuxFollower.set(ControlMode.PercentOutput, axis, DemandType.ArbitraryFeedForward, -turn);
 	            if (bFireMp == true) {
 	                /* go to MP logic */

@@ -247,7 +247,7 @@ public class Robot extends TimedRobot {
 			if (_firstCall)
 				System.out.println("This is Arcade Drive.\n");
 			
-			_leftMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, +turn);
+			_leftMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, turn);
 			_rightMaster.set(ControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, -turn);
 
 			/* Uncomment to find total encoer units per rotation */
