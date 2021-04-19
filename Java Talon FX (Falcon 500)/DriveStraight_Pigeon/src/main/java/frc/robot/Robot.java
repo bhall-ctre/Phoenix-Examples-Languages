@@ -55,19 +55,21 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
     /* Hardware */
-	TalonFX _leftFront;    // Drivetrain
-	TalonFX _rightFront;  // Drivetrain
-	TalonFX _leftRear;     // Drivetrain
-	TalonFX _rightRear;    // Drivetrain
-    PigeonIMU _pidgey;      // Pigeon IMU used to enforce straight drive
+	WPI_TalonFX _leftFront;    // Drivetrain
+	WPI_TalonFX _rightFront;  // Drivetrain
+	WPI_TalonFX _leftRear;     // Drivetrain
+	WPI_TalonFX _rightRear;    // Drivetrain
+    WPI_PigeonIMU _pidgey;      // Pigeon IMU used to enforce straight drive
 	Joystick _driveStick;	// Joystick object on USB port 1
 
 	/** States for tracking whats controlling the drivetrain */
@@ -91,17 +93,28 @@ public class Robot extends TimedRobot {
 	
 	/** Count loops to print every second or so */
 	int _printLoops = 0;
+	
+	DrivebaseSimFX _driveSim;
 
-	public Robot() {
+	@Override
+	public void simulationPeriodic() {
+		_driveSim.run();
+	}
+
+	@Override
+	public void robotInit() {
         /* Init Hardware */
-		_leftFront = new TalonFX(1);
-		_rightFront = new TalonFX(2);
-		_leftRear = new TalonFX(3);
-		_rightRear = new TalonFX(2);
-		_pidgey = new PigeonIMU(3);             // Change ID accordingly 
+		_leftFront = new WPI_TalonFX(1);
+		_rightFront = new WPI_TalonFX(2);
+		_leftRear = new WPI_TalonFX(3);
+		_rightRear = new WPI_TalonFX(4);
+		_pidgey = new WPI_PigeonIMU(3);             // Change ID accordingly 
         
 		/* Define joystick being used at USB port #0 on the Drivers Station */
 		_driveStick = new Joystick(0);	
+
+		_driveSim = new DrivebaseSimFX(_leftFront, _rightFront, _pidgey);
+		SmartDashboard.putData("Field", _driveSim.getField());
 	}
 	
     public void teleopInit() {
@@ -110,7 +123,15 @@ public class Robot extends TimedRobot {
         _leftFront.configFactoryDefault();
         _rightRear.configFactoryDefault();
         _leftRear.configFactoryDefault();
-        _pidgey.configFactoryDefault();
+		_pidgey.configFactoryDefault();
+
+		_leftRear.follow(_leftFront);
+		_rightRear.follow(_rightFront);
+		
+		_leftFront.setInverted(TalonFXInvertType.CounterClockwise);
+		_leftRear.setInverted(TalonFXInvertType.FollowMaster);
+		_rightFront.setInverted(TalonFXInvertType.Clockwise);
+		_rightRear.setInverted(TalonFXInvertType.FollowMaster);
 		/*
 		 * Talon FX does not need sensor phase set for its integrated sensor
 		 * This is because it will always be correct if the selected feedback device is integrated sensor (default value)
@@ -214,9 +235,7 @@ public class Robot extends TimedRobot {
 
 		/* our right side motors need to drive negative to move robot forward */
 		_leftFront.set(TalonFXControlMode.PercentOutput, left);
-		_leftRear.set(TalonFXControlMode.PercentOutput, left);
-		_rightFront.set(TalonFXControlMode.PercentOutput, -right);
-		_rightRear.set(TalonFXControlMode.PercentOutput, -right);
+		_rightFront.set(TalonFXControlMode.PercentOutput, right);
 
 		/* Prints for debugging */
 		if (++_printLoops > 50){
