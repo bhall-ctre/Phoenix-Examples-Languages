@@ -65,9 +65,12 @@ public:
 	void RobotInit() {
 		/* Factory Default all hardware to prevent unexpected behaviour */
 		_talon.ConfigFactoryDefault();
-		
-		/* lets grab the 360 degree position of the MagEncoder's absolute position */
-		int absolutePosition = _talon.GetSensorCollection().GetPulseWidthPosition() & 0xFFF; /* mask out the bottom12 bits, we don't care about the wrap arounds */
+
+		/**
+		 * Grab the 360 degree position of the MagEncoder's absolute
+		 * position, and intitally set the relative sensor to match.
+		 */
+		int absolutePosition = _talon.GetSensorCollection().GetPulseWidthPosition();
 		/* use the low level API to set the quad encoder signal */
 		_talon.SetSelectedSensorPosition(absolutePosition, kPIDLoopIdx,
 				kTimeoutMs);
