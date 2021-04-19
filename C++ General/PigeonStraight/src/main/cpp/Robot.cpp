@@ -35,17 +35,18 @@
  */
 #include "frc/WPILib.h"
 #include "ctre/Phoenix.h"
+#include "DrivebaseSimSRX.h"
 
 using namespace frc;
 
 class Robot: public TimedRobot {
 	/* robot peripherals */
-	TalonSRX _leftFront{0};
-	TalonSRX _rightFront{1};
-	TalonSRX _leftRear{2};
-	TalonSRX _rightRear{3};
-	TalonSRX _spareTalon{4}; /* spare talon, remove if not necessary, Pigeon can be placed on CANbus or plugged into a Talon. */
-	PigeonIMU _pidgey{&_leftFront};
+	WPI_TalonSRX _leftFront{0};
+	WPI_TalonSRX _rightFront{1};
+	WPI_TalonSRX _leftRear{2};
+	WPI_TalonSRX _rightRear{3};
+	WPI_TalonSRX _spareTalon{4}; /* spare talon, remove if not necessary, Pigeon can be placed on CANbus or plugged into a Talon. */
+	WPI_PigeonIMU _pidgey{_leftFront};
 	Joystick _driveStick{0}; /* Joystick object on USB port 1 */
 	/** state for tracking whats controlling the drivetrain */
 	enum {
@@ -63,7 +64,13 @@ class Robot: public TimedRobot {
 	double _targetAngle = 0;
 	/** count loops to print every second or so */
 	int _printLoops = 0;
+
+	DrivebaseSimSRX _driveSim{_leftFront, _rightFront, _pidgey};
+
 public:
+	void SimulationPeriodic() {
+		_driveSim.Run();
+	}
 	void RobotInit() {
 		/* Factory Default all hardware to prevent unexpected behaviour */
 		_leftFront.ConfigFactoryDefault();
@@ -72,6 +79,16 @@ public:
 		_rightRear.ConfigFactoryDefault();
 		_spareTalon.ConfigFactoryDefault();
 		_pidgey.ConfigFactoryDefault();
+
+		_leftRear.Follow(_leftFront);
+		_rightRear.Follow(_rightFront);
+
+		_leftFront.SetInverted(InvertType::None);
+		_leftFront.SetInverted(InvertType::FollowMaster);
+		_rightFront.SetInverted(InvertType::InvertMotorOutput);
+		_leftFront.SetInverted(InvertType::FollowMaster);
+
+		frc::SmartDashboard::PutData(wpi::StringRef("Field"), &_driveSim.GetField());
 	}
 	void TeleopInit() {
 	    /* nonzero to block the config until success, zero to skip checking */
@@ -166,9 +183,7 @@ public:
 
 		/* my right side motors need to drive negative to move robot forward */
 		_leftFront.Set(ControlMode::PercentOutput, left);
-		_leftRear.Set(ControlMode::PercentOutput, left);
-		_rightFront.Set(ControlMode::PercentOutput, -1. * right);
-		_rightRear.Set(ControlMode::PercentOutput, -1. * right);
+		_rightFront.Set(ControlMode::PercentOutput, right);
 
 		/* some printing for easy debugging */
 		if (++_printLoops > 50) {

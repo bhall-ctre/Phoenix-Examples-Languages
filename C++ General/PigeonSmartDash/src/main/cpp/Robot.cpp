@@ -35,8 +35,8 @@ public:
 	/* forward proto */
 	class PlotThread;
 
-	TalonSRX _talon{2};
-	PigeonIMU _pidgey{&_talon};
+	WPI_TalonSRX _talon{2};
+	WPI_PigeonIMU _pidgey{_talon};
 
 	PlotThread *_plotThread = nullptr;
 
