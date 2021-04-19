@@ -4,6 +4,7 @@
 *.o
 *.gitignore
 *.user
+**/imgui.ini
 FRCUserProgram
 .vs
 bin
