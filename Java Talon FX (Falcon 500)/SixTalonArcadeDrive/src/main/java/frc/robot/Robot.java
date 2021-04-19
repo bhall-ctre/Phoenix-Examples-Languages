@@ -59,10 +59,10 @@ public class Robot extends TimedRobot {
 	WPI_TalonFX _leftSlave2 = new WPI_TalonFX(4);
 	WPI_TalonFX _rightSlave2 = new WPI_TalonFX(17);
 
-    /* Construct drivetrain by providing master motor controllers */
+	/* Construct drivetrain by providing master motor controllers */
 	DifferentialDrive _drive = new DifferentialDrive(_frontLeftMotor, _frontRightMotor);
 
-    /* Joystick for control */
+	/* Joystick for control */
 	Joystick _joy = new Joystick(0);
 
 	public void simulationInit() {
@@ -115,8 +115,8 @@ public class Robot extends TimedRobot {
 		 * 
 		 * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
 		 */
-        // _frontLeftMotor.setSensorPhase(true);
-        // _frontRightMotor.setSensorPhase(true);
+		// _frontLeftMotor.setSensorPhase(true);
+		// _frontRightMotor.setSensorPhase(true);
 
 		/* diff drive assumes (by default) that 
 			right side must be negative to move forward.
@@ -128,24 +128,24 @@ public class Robot extends TimedRobot {
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-        /* Gamepad processing */
+		/* Gamepad processing */
 		double forward = -_joy.getY();	// Sign this so forward is positive
 		double turn = _joy.getZ();       // Sign this so right is positive
-        
-        /* Deadband - within 10% joystick, make it zero */
+		
+		/* Deadband - within 10% joystick, make it zero */
 		if (Math.abs(forward) < 0.10) {
 			forward = 0;
 		}
 		if (Math.abs(turn) < 0.10) {
 			turn = 0;
 		}
-        
+		
 		/**
 		 * Print the joystick values to sign them, comment
 		 * out this line after checking the joystick directions. 
 		 */
-        System.out.println("JoyY:" + forward + "  turn:" + turn );
-        
+		System.out.println("JoyY:" + forward + "  turn:" + turn );
+		
 		/**
 		 * Drive the robot, 
 		 */

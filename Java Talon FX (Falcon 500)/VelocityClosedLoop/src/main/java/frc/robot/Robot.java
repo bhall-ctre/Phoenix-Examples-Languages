@@ -55,14 +55,14 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import frc.robot.sim.PhysicsSim;
 
 public class Robot extends TimedRobot {
-    /* Hardware */
+	/* Hardware */
 	WPI_TalonFX _talon = new WPI_TalonFX(1);
-    Joystick _joy = new Joystick(0);
-    
-    /* String for output */
-    StringBuilder _sb = new StringBuilder();
-    
-    /* Loop tracker for prints */
+	Joystick _joy = new Joystick(0);
+	
+	/* String for output */
+	StringBuilder _sb = new StringBuilder();
+	
+	/* Loop tracker for prints */
 	int _loops = 0;
 
 	public void simulationInit() {
@@ -73,15 +73,15 @@ public class Robot extends TimedRobot {
 	}
 
 	public void robotInit() {
-        /* Factory Default all hardware to prevent unexpected behaviour */
+		/* Factory Default all hardware to prevent unexpected behaviour */
 		_talon.configFactoryDefault();
 		
 		/* Config neutral deadband to be the smallest possible */
 		_talon.configNeutralDeadband(0.001);
 
 		/* Config sensor used for Primary PID [Velocity] */
-        _talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,
-                                            Constants.kPIDLoopIdx, 
+		_talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,
+											Constants.kPIDLoopIdx, 
 											Constants.kTimeoutMs);
 											
 
@@ -103,7 +103,7 @@ public class Robot extends TimedRobot {
 		 * 
 		 * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
 		 */
-        // _talon.setSensorPhase(true);
+		// _talon.setSensorPhase(true);
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
 		_sb.append(_talon.getSelectedSensorVelocity(Constants.kPIDLoopIdx));
 		_sb.append("u"); 	// Native units
 
-        /** 
+		/** 
 		 * When button 1 is held, start and run Velocity Closed loop.
 		 * Velocity Closed Loop is controlled by joystick position x500 RPM, [-500, 500] RPM
 		 */
@@ -153,12 +153,12 @@ public class Robot extends TimedRobot {
 			_talon.set(TalonFXControlMode.PercentOutput, leftYstick);
 		}
 
-        /* Print built string every 10 loops */
+		/* Print built string every 10 loops */
 		if (++_loops >= 10) {
 			_loops = 0;
 			System.out.println(_sb.toString());
-        }
-        /* Reset built string */
+		}
+		/* Reset built string */
 		_sb.setLength(0);
 	}
 }

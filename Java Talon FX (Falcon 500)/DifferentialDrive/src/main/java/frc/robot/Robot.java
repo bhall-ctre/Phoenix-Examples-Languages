@@ -159,6 +159,6 @@ public class Robot extends TimedRobot {
          */
         _diffDrive.setRightSideInverted(false);
         
-		SmartDashboard.putData("Field", _driveSim.getField());
+        SmartDashboard.putData("Field", _driveSim.getField());
     }
 }

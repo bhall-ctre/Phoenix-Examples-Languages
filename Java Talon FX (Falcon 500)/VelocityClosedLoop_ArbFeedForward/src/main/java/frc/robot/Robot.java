@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
 	public void teleopInit(){
 		/* Disable all motors */
 		_rightMaster.set(TalonFXControlMode.PercentOutput, 0);
-        _leftMaster.set(TalonFXControlMode.PercentOutput,  0);
+		_leftMaster.set(TalonFXControlMode.PercentOutput,  0);
 		
 		/* Set neutral modes */
 		_leftMaster.setNeutralMode(NeutralMode.Brake);
@@ -126,8 +126,8 @@ public class Robot extends TimedRobot {
 		 * 
 		 * https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
 		 */
-        // _leftMaster.setSensorPhase(true);
-        // _rightMaster.setSensorPhase(true);
+		// _leftMaster.setSensorPhase(true);
+		// _rightMaster.setSensorPhase(true);
 
 
 		/** Feedback Sensor Configuration */
@@ -208,8 +208,8 @@ public class Robot extends TimedRobot {
 		double forward = -_gamepad.getY();
 		double turn = _gamepad.getTwist();
 		forward = Deadband(forward);
-        turn = Deadband(turn);
-            
+		turn = Deadband(turn);
+			
 		/* Button processing for state toggle and sensor zeroing */
 		getButtons(btns, _gamepad);
 		if(btns[2] && !_btns[2]){
@@ -228,7 +228,7 @@ public class Robot extends TimedRobot {
 			_rightMaster.set(TalonFXControlMode.PercentOutput, forward, DemandType.ArbitraryFeedForward, -turn);
 			
 			/* Uncomment to view velocity native units */
-            //System.out.println("Native RPM: " + _rightMaster.getSelectedSensorVelocity());
+			//System.out.println("Native RPM: " + _rightMaster.getSelectedSensorVelocity());
 		}else{
 			if (_firstCall) {
 				System.out.println("This is Velocity Closed Loop with an Arbitrary Feed Forward.");
@@ -249,8 +249,8 @@ public class Robot extends TimedRobot {
 			_leftMaster.follow(_rightMaster);
 			
 			/* Uncomment to view RPM in Driver Station */
-            // double actual_RPM = (_rightMaster.getSelectedSensorVelocity() / (double)Constants.kSensorUnitsPerRotation * 600f);
-            // System.out.println("Vel[RPM]: " + actual_RPM + " Pos: " + _rightMaster.getSelectedSensorPosition());
+			// double actual_RPM = (_rightMaster.getSelectedSensorVelocity() / (double)Constants.kSensorUnitsPerRotation * 600f);
+			// System.out.println("Vel[RPM]: " + actual_RPM + " Pos: " + _rightMaster.getSelectedSensorPosition());
 		}
 		_firstCall = false;
 	}

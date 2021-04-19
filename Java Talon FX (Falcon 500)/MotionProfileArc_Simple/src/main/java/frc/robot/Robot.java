@@ -102,12 +102,12 @@ public class Robot extends TimedRobot {
     /* quick and dirty plotter to smartdash */
 //    PlotThread _plotThread = new PlotThread(_rightMaster);
 
-	DrivebaseSimFX _driveSim = new DrivebaseSimFX(_leftAuxFollower, _rightMaster, _pidgy);
+    DrivebaseSimFX _driveSim = new DrivebaseSimFX(_leftAuxFollower, _rightMaster, _pidgy);
 
-	@Override
-	public void simulationPeriodic() {
-		_driveSim.run();
-	}
+    @Override
+    public void simulationPeriodic() {
+        _driveSim.run();
+    }
 
     public void robotInit() {
 
@@ -171,7 +171,7 @@ public class Robot extends TimedRobot {
         _rightMaster.setStatusFramePeriod(StatusFrame.Status_10_Targets, 20);
         _rightMaster.setStatusFramePeriod(StatusFrame.Status_17_Targets1, 20);
         
-		SmartDashboard.putData("Field", _driveSim.getField());
+        SmartDashboard.putData("Field", _driveSim.getField());
     }
 
     public void robotPeriodic() {
