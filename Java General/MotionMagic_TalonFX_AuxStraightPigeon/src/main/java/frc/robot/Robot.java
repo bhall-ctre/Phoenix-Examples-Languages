@@ -25,7 +25,7 @@
 /**
  * Description:
  * The MotionMagic_TalonFX_AuxStraightPigeon example demonstrates the Talon auxiliary and 
- * remote features to peform complex closed loops. This example has the robot performing 
+ * remote features to perform complex closed loops. This example has the robot performing 
  * Motion Magic with an auxiliary closed loop on Pigeon Yaw to keep the robot straight.
  * 
  * This example uses:

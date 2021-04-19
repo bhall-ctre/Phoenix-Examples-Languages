@@ -23,7 +23,7 @@
  */
 /**
  * Example demonstrating the Position closed-loop servo.
- * Tested with Logitech F350 USB Gamepad inserted into Driver Station]
+ * Tested with Logitech F350 USB Gamepad inserted into Driver Station.
  *
  * Be sure to select the correct feedback sensor using configSelectedFeedbackSensor() below.
  *

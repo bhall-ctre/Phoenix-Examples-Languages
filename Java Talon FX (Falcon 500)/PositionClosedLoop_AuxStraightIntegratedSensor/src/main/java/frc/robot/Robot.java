@@ -25,7 +25,7 @@
 /**
  * Description:
  * The PositiionClosedLoop_AuxStraightIntegratedSensor example demonstrates the Talon Auxiliary
- * and Remote Features to peform more complex. This example has the robot performing Position 
+ * and Remote Features to perform more complex. This example has the robot performing Position 
  * Closed Loop with an auxiliary closed loop on Integrated Sensors difference (Heading)
  * to keep the robot straight.
  * 
