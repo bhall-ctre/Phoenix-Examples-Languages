@@ -66,21 +66,21 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.sensors.*;
 
 public class Robot extends TimedRobot {
-    /* Hardware */
+	/* Hardware */
 	WPI_TalonSRX _leftFront;    // Drivetrain
 	WPI_TalonSRX _rightFront;  // Drivetrain
 	WPI_VictorSPX _leftRear;     // Drivetrain
 	WPI_VictorSPX _rightRear;    // Drivetrain
-    WPI_TalonSRX _spareTalon;   // Optional Talon, Can be used for Remote Talon (Can be removed)
-    WPI_PigeonIMU _pidgey;      // Pigeon IMU used to enforce straight drive
+	WPI_TalonSRX _spareTalon;   // Optional Talon, Can be used for Remote Talon (Can be removed)
+	WPI_PigeonIMU _pidgey;      // Pigeon IMU used to enforce straight drive
 	Joystick _driveStick;	// Joystick object on USB port 1
 
 	/** States for tracking whats controlling the drivetrain */
 	enum GoStraight
 	{
-        Off, 
-        UsePigeon, 
-        SameThrottle
+		Off, 
+		UsePigeon, 
+		SameThrottle
 	};
 	GoStraight _goStraight = GoStraight.Off;    // Start example with GoStraight Off
 
@@ -105,26 +105,26 @@ public class Robot extends TimedRobot {
 	}
 
 	public void robotInit() {
-        /* Init Hardware */
+		/* Init Hardware */
 		_leftFront = new WPI_TalonSRX(1);
 		_rightFront = new WPI_TalonSRX(2);
 		_leftRear = new WPI_VictorSPX(3);
 		_rightRear = new WPI_VictorSPX(2);
 		//_spareTalon = new WPI_TalonSRX(0);	
 
-        /**
+		/**
 		 * Set isPigeonOnCAN to:
-         * True if Pigeon is Connected through CAN 
-         * False if connected through gadgeteer (Constructor takes the Talon it is connected to)
-         */
-        boolean isPigeonOnCAN = true;
-        if(isPigeonOnCAN){
-            /* Pigeon is on CANBus (powered from ~12V, and has a device ID of zero) */
-            _pidgey = new WPI_PigeonIMU(3);             // Change ID accordingly 
-        }else{
-            /* Pigeon is ribbon cabled to the specified CANTalon. */
-            _pidgey = new WPI_PigeonIMU(_spareTalon);   // Change Talon Accordingly
-        }
+		 * True if Pigeon is Connected through CAN 
+		 * False if connected through gadgeteer (Constructor takes the Talon it is connected to)
+		 */
+		boolean isPigeonOnCAN = true;
+		if(isPigeonOnCAN){
+			/* Pigeon is on CANBus (powered from ~12V, and has a device ID of zero) */
+			_pidgey = new WPI_PigeonIMU(3);             // Change ID accordingly 
+		}else{
+			/* Pigeon is ribbon cabled to the specified CANTalon. */
+			_pidgey = new WPI_PigeonIMU(_spareTalon);   // Change Talon Accordingly
+		}
 
 		/* Define joystick being used at USB port #0 on the Drivers Station */
 		_driveStick = new Joystick(0);
@@ -133,12 +133,12 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Field", _driveSim.getField());
 	}
 	
-    public void teleopInit() {
-        /* Factory Default all Hardware to prevent unexpected behaviour */
-        _rightFront.configFactoryDefault();
-        _leftFront.configFactoryDefault();
-        _rightRear.configFactoryDefault();
-        _leftRear.configFactoryDefault();
+	public void teleopInit() {
+		/* Factory Default all Hardware to prevent unexpected behaviour */
+		_rightFront.configFactoryDefault();
+		_leftFront.configFactoryDefault();
+		_rightRear.configFactoryDefault();
+		_leftRear.configFactoryDefault();
 		_pidgey.configFactoryDefault();
 		
 		_leftRear.follow(_leftFront);
@@ -149,19 +149,19 @@ public class Robot extends TimedRobot {
 		_rightFront.setInverted(InvertType.InvertMotorOutput);
 		_rightRear.setInverted(InvertType.FollowMaster);
 
-        /* nonzero to block the config until success, zero to skip checking */
-        final int kTimeoutMs = 30;
-    
-        /* reset heading, angle measurement wraps at plus/minus 23,040 degrees (64 rotations) */
-    	_pidgey.setFusedHeading(0.0, kTimeoutMs);
-		_goStraight = GoStraight.Off;    //Start example with GoStraight Off
-    }
+		/* nonzero to block the config until success, zero to skip checking */
+		final int kTimeoutMs = 30;
 	
-    /**
-     * This function is called periodically during operator control
-     */
-    public void teleopPeriodic() {
-    	/* get Pigeon status information from Pigeon API */
+		/* reset heading, angle measurement wraps at plus/minus 23,040 degrees (64 rotations) */
+		_pidgey.setFusedHeading(0.0, kTimeoutMs);
+		_goStraight = GoStraight.Off;    //Start example with GoStraight Off
+	}
+	
+	/**
+	 * This function is called periodically during operator control
+	 */
+	public void teleopPeriodic() {
+		/* get Pigeon status information from Pigeon API */
 		PigeonIMU.GeneralStatus genStatus = new PigeonIMU.GeneralStatus();
 		PigeonIMU.FusionStatus fusionStatus = new PigeonIMU.FusionStatus();
 		double [] xyz_dps = new double [3];
@@ -169,7 +169,7 @@ public class Robot extends TimedRobot {
 		_pidgey.getGeneralStatus(genStatus);
 		_pidgey.getRawGyro(xyz_dps);
 		_pidgey.getFusedHeading(fusionStatus);
-        double currentAngle = fusionStatus.heading;
+		double currentAngle = fusionStatus.heading;
 		boolean angleIsGood = (_pidgey.getState() == PigeonIMU.PigeonState.Ready) ? true : false;
 		double currentAngularRate = xyz_dps[2];
 		/* get input from gamepad */
@@ -178,8 +178,8 @@ public class Robot extends TimedRobot {
 		double turnThrottle = _driveStick.getTwist() * -0.5;/* sign so that positive means turn left */
 		/* deadbands so centering joysticks always results in zero output */
 		forwardThrottle = Deadband(forwardThrottle);
-        turnThrottle = Deadband(turnThrottle);
-        
+		turnThrottle = Deadband(turnThrottle);
+		
 		/* state machine to update our goStraight selection */
 		switch (_goStraight) {
 			/* go straight is off, better check gamepad to see if we should enable the feature */
@@ -194,8 +194,8 @@ public class Robot extends TimedRobot {
 					_goStraight = GoStraight.UsePigeon;
 					_targetAngle = currentAngle;
 				}
-                break;
-                
+				break;
+				
 			/* we are servo-ing heading with Pigeon */
 			case UsePigeon:
 				if (userWantsGoStraight == false) {
@@ -257,22 +257,22 @@ public class Robot extends TimedRobot {
 			System.out.println( angleIsGood ? "Angle is good" : "Angle is NOT GOOD");
 			System.out.println("------------------------------------------");
 		}
-    }
+	}
 
-    /** 
-     * @param axisVal to deadband.
-     * @return 10% deadbanded joystick value
-     */
+	/** 
+	 * @param axisVal to deadband.
+	 * @return 10% deadbanded joystick value
+	 */
 	double Deadband(double axisVal) {
 		if (axisVal < -0.10)
 			return axisVal;
 		if (axisVal > 0.10)
 			return axisVal;
 		return 0;
-    }
-    
+	}
+	
 	/** 
-     * @param value to cap.
+	 * @param value to cap.
 	 * @param peak positive double representing the maximum (peak) value.
 	 * @return a capped value.
 	 */
@@ -282,8 +282,8 @@ public class Robot extends TimedRobot {
 		if (value > +peak)
 			return +peak;
 		return value;
-    }
-    
+	}
+	
 	/**
 	 * Given the robot forward throttle and ratio, return the max
 	 * corrective turning throttle to adjust for heading.  This is
@@ -300,5 +300,5 @@ public class Robot extends TimedRobot {
 		if(forwardThrot < 0.10)
 			return 0.10;
 		return forwardThrot;
-    }
+	}
 }
