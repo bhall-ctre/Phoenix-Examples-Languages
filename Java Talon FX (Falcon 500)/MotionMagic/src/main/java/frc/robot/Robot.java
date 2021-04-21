@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
 		_talon.configNeutralDeadband(0.001, Constants.kTimeoutMs);
 
 		/**
-		 * Configure Talon FX Output and Sesnor direction accordingly Invert Motor to
+		 * Configure Talon FX Output and Sensor direction accordingly Invert Motor to
 		 * have green LEDs when driving Talon Forward / Requesting Postiive Output Phase
 		 * sensor to have positive increment when driving Talon Forward (Green LED)
 		 */

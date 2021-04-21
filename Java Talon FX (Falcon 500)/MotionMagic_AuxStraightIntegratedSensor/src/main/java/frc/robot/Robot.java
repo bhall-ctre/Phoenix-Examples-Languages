@@ -30,7 +30,7 @@
  * 
  * This example uses:
  * - 2x Falcon Integrated Sensor, one of both sides of robot for Auxiliary Closed Loop on heading
- * A Talon/Victor calculates the heading by taking the difference between both sesnors.
+ * A Talon/Victor calculates the heading by taking the difference between both sensors.
  * - 2x Falcon Integrated Sensor, One on both sides of robot for Primary Closed Loop on Position
  * A Talon/Victor calculates the distance by taking the average between both sensors.
  * 

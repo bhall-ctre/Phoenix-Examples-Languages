@@ -81,7 +81,7 @@ void Robot::RobotInit() {
                                         10);
 
     /**
-     * Configure Talon SRX Output and Sesnor direction accordingly
+     * Configure Talon SRX Output and Sensor direction accordingly
      * Invert Motor to have green LEDs when driving Talon Forward / Requesting Postiive Output
      * Phase sensor to have positive increment when driving Talon Forward (Green LED)
      */
